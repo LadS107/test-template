@@ -1,0 +1,98 @@
+name: Build and Push Docker Images to ACR
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the 'main' branch
+
+jobs:
+  build-and-push-to-acr:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip workflow if [skip ci] is in the commit message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Default step
+        run: echo "please use below code as per your requirement"
+
+
+
+# jobs:
+#   build-and-push-to-acr:
+#     if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip workflow if [skip ci] is in the commit message
+#     runs-on: ubuntu-latest
+#     steps:
+      # Step 1: Check out the repository
+      # - name: Checkout repository
+      #   uses: actions/checkout@v3
+
+      # Step 2: Log in to Azure
+      # - name: Log in to Azure
+      #   env:
+      #     AZURE_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+      #     AZURE_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      #     AZURE_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      #   run: |
+      #     az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+      #     az acr login --name <YOUR_ACR_NAME>
+
+      # Step 3: Build Backend Docker image
+      # - name: Build Backend Docker image
+      #   run: |
+      #     docker build -t <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-backend:${{ github.sha }} ./Backend
+
+      # Step 4: Build Frontend Docker image
+      # - name: Build Frontend Docker image
+      #   run: |
+      #     docker build -t <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-frontend:${{ github.sha }} ./Frontend
+
+      # Step 5: Push Backend Docker image to ACR
+      # - name: Push Backend Docker image
+      #   run: |
+      #     docker push <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-backend:${{ github.sha }}
+
+      # Step 6: Push Frontend Docker image to ACR
+      # - name: Push Frontend Docker image
+      #   run: |
+      #     docker push <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-frontend:${{ github.sha }}
+
+      # Step 7: Verify docker image and ACR Repositories
+      # - name: List ACR Repositories
+      #   run: |
+      #     az acr repository list --name <YOUR_ACR_NAME> --output table
+      #     docker images
+
+      # Step 8: Update Kubernetes Manifests and Docker File
+      # - name: Update Kubernetes Manifests
+      #   run: |
+      #     sed -i "s|FROM .*|FROM <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-backend:${{ github.sha }}|g" Backend/Dockerfile
+      #     sed -i "s|FROM .*|FROM <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-frontend:${{ github.sha }}|g" Frontend/Dockerfile
+      #     sed -i "s|image:.*|image: <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-backend:${{ github.sha }}|g" kubernetes/backend-deploy.yml
+      #     sed -i "s|image:.*|image: <YOUR_ACR_NAME>.azurecr.io/${GITHUB_REPOSITORY,,}-frontend:${{ github.sha }}|g" kubernetes/frontend-deploy.yml
+
+      # Step 9: Commit and Push Updated Manifests
+      # - name: Commit and Push Updated Manifests
+      #   run: |
+      #     git config --global user.name "GitHub Actions"
+      #     git config --global user.email "<YOUR_EMAIL>"
+      #     git add .
+      #     git commit -m "Update image tags to ${{ github.sha }} [skip ci]"
+      #     git push
+
+
+
+
+
+
+      # Optional Steps: Get AKS credentials and Deploy to AKS
+      # Uncomment and configure the following steps if needed
+
+      # - name: Get AKS credentials
+      #   run: |
+      #     az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
+
+      # - name: Deploy to AKS
+      #   run: |
+      #     kubectl apply -f kubernetes/backend-deploy.yml
+      #     kubectl apply -f kubernetes/frontend-deploy.yml
+      #     kubectl apply -f kubernetes/backend-service.yml
+      #     kubectl apply -f kubernetes/frontend-service.yml
+      #     kubectl get pods
